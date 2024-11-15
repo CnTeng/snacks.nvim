@@ -153,7 +153,7 @@ function M.icon(sign, len)
   return sign.texthl and ("%#" .. sign.texthl .. "#" .. text .. "%*") or text
 end
 
----@return string
+---@return string | nil
 function M.get()
   M.setup()
   local win = vim.g.statusline_winid
@@ -167,7 +167,7 @@ function M.get()
   local is_bt_ignore = config.bt_ignore and vim.tbl_contains(config.bt_ignore, buftype)
 
   if is_ft_ignore or is_bt_ignore then
-    return vim.g.prev_statuscolumn
+    return nil
   end
 
   local components = { "", "", "" } -- left, middle, right
