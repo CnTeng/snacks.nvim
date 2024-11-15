@@ -121,6 +121,7 @@ function M.setup(opts)
   end
 
   if M.config.statuscolumn.enabled then
+    vim.g.prev_statuscolumn = vim.o.statuscolumn
     vim.o.statuscolumn = [[%!v:lua.require'snacks.statuscolumn'.get()]]
   end
 

@@ -11,6 +11,8 @@ local M = setmetatable({}, {
 ---@class snacks.statuscolumn.Config
 ---@field enabled? boolean
 local defaults = {
+  ft_ignore = nil, -- filetypes to ignore
+  bt_ignore = nil, -- buftypes to ignore
   left = { "mark", "sign" }, -- priority of signs on the left (high to low)
   right = { "fold", "git" }, -- priority of signs on the right (high to low)
   folds = {
@@ -158,6 +160,15 @@ function M.get()
   local buf = vim.api.nvim_win_get_buf(win)
   local is_file = vim.bo[buf].buftype == ""
   local show_signs = vim.wo[win].signcolumn ~= "no"
+
+  local filetype = vim.bo[buf].filetype
+  local buftype = vim.bo[buf].buftype
+  local is_ft_ignore = config.ft_ignore and vim.tbl_contains(config.ft_ignore, filetype)
+  local is_bt_ignore = config.bt_ignore and vim.tbl_contains(config.bt_ignore, buftype)
+
+  if is_ft_ignore or is_bt_ignore then
+    return vim.g.prev_statuscolumn
+  end
 
   local components = { "", "", "" } -- left, middle, right
 
