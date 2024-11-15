@@ -40,6 +40,18 @@ local did_setup = false
 
 ---@private
 function M.setup()
+  local win = vim.g.statusline_winid
+  local buf = vim.api.nvim_win_get_buf(win)
+
+  local filetype = vim.bo[buf].filetype
+  local buftype = vim.bo[buf].buftype
+  local is_ft_ignore = config.ft_ignore and vim.tbl_contains(config.ft_ignore, filetype)
+  local is_bt_ignore = config.bt_ignore and vim.tbl_contains(config.bt_ignore, buftype)
+
+  if is_ft_ignore or is_bt_ignore then
+    return
+  end
+
   if did_setup then
     return
   end
@@ -153,7 +165,7 @@ function M.icon(sign, len)
   return sign.texthl and ("%#" .. sign.texthl .. "#" .. text .. "%*") or text
 end
 
----@return string | nil
+---@return string
 function M.get()
   M.setup()
   local win = vim.g.statusline_winid
@@ -167,7 +179,7 @@ function M.get()
   local is_bt_ignore = config.bt_ignore and vim.tbl_contains(config.bt_ignore, buftype)
 
   if is_ft_ignore or is_bt_ignore then
-    return nil
+    return ""
   end
 
   local components = { "", "", "" } -- left, middle, right
